@@ -19,22 +19,22 @@ int main() {
 /*
  variables which need to be removed or modified:
  tmp - not used
- avg - declared early, uninitialised
  t - defaulted, then overwritten
- a, b, c, total - could be declared closer to their use
+ a - can be replaced by avg's initial value
+ b,c - could be const
+ b, c, total - could be declared closer to their use
  if statement - could be replaced with a direct assignment using a boolean expression
  final refactored code:
     #include <iostream>
     using namespace std;
 
     int main() {
-        int a = 78;        // exam 1
-        int b = 85;        // exam 2
-        int c = 92;        // exam 3
-        int total = a + b + c;
-        double avg = total / 3.0;
-        bool t = (avg >= 50.0);
-        cout << "Average: " << avg << "  passed? " << (t ? "yes" : "no") << endl;
+        double avg = 78.0;
+        const int b = 85;        // exam 2
+        const int c = 92;        // exam 3
+        int total = avg + b + c;
+        avg = total / 3.0;
+        cout << "Average: " << avg << "  passed? " << ((avg >= 50.0) ? "yes" : "no") << endl;
         return 0;
     }
 
