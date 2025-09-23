@@ -24,7 +24,7 @@ These are two safe initialization strategies for maxVal:
         using namespace std;
 
         int main() {
-            int maxVal = std::numeric_limits<int>::min();
+            int maxVal = numeric_limits<int>::min();
             // or int maxVal = 0; if input values are non-negative
             int count; cin >> count;
             // if (count <= 0) {

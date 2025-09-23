@@ -12,22 +12,23 @@ cout << "Average: " << average << "\n";
 These variables can be const:
     n - input size
     v - input value
+    average - computed average
 These variables can be narrowed scope without hurting readability:
-    sum - only used in the loop and for average calculation
+    n - should be > 0 to
 These are edge cases must be guard:
     n should be > 0 to avoid division by zero
 Final code with improvements:
     const int n; cin >> n;
     if (n <= 0) {
-        cout << "Invalid input size\n";
-        return 1; // or handle error appropriately
+        cerr << "Invalid input size\n";
+        return 1;
     }
     int sum = 0;
     for (int i = 0; i < n; ++i) {
         const int v; cin >> v;
         sum += v;
     }
-    double average = sum / static_cast<double>(n);
+    const double average = sum / static_cast<double>(n);
     cout << "Average: " << average << "\n";
 
 */
