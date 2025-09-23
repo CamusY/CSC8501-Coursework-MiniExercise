@@ -28,8 +28,8 @@ These are two safe initialization strategies for maxVal:
             // or int maxVal = 0; if input values are non-negative
             int count; cin >> count;
             // if (count <= 0) {
-            //    cout << "No values provided.\n";
-            //    return 1; // or handle error appropriately
+            //    cerr << "No values provided.\n";
+            //    return 1; 
             //}
             for (int i = 0; i < count; ++i) {
                 int val; cin >> val;
@@ -54,8 +54,8 @@ These are two safe initialization strategies for maxVal:
         int main() {
             int count; cin >> count;
             if (count <= 0) {
-                cout << "No values provided.\n";
-                return 1; // or handle error appropriately
+                cerr << "No values provided.\n";
+                return 1;
             }
             int val; cin >> val;
             int maxVal = val;
