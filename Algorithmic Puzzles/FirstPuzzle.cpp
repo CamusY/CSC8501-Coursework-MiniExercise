@@ -30,7 +30,13 @@ long long NewtonSqrtWithNoFloats(long long n){
     return x;
 }
 
+/*
+Usually, it is the end of this puzzle, but I want to dig deeper.
+How can a system without floating-point support represent a number like 3.14?
 
+
+
+*/
 
 int main() {
     long long number;
