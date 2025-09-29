@@ -1,9 +1,13 @@
 #include <iostream>
 #include <stdio.h>
-#include <cmath> // For testing purposes only
+
+// For testing purposes only
+// #include <cmath> 
 
 using namespace std;
 
+
+// At first, I tried to use binary search method to find the square root of a number
 long long binarySearchSqrtWithNoFloats(long long n) {
     if (n < 0) return -1; // Error for negative numbers
     if (n == 0 || n == 1) return n;
@@ -20,6 +24,7 @@ long long binarySearchSqrtWithNoFloats(long long n) {
     return ans;
 }
 
+//But I found that Newton's method is faster and more elegant, and it won't overflow as easily as binary search method.
 long long NewtonSqrtWithNoFloats(long long n){
     if (n < 0) return -1; // Error for negative numbers
     if (n == 0 || n == 1) return n;
@@ -63,7 +68,7 @@ public:
     FixedPoint(long integerPart) : rawValue(integerPart * SCALE) {}
 
     // Test double constructor (only for testing purposes)
-    FixedPoint(double doubleValueForTestOnly ) : rawValue(round(doubleValueForTestOnly*SCALE)) {}
+    // FixedPoint(double doubleValueForTestOnly ) : rawValue(round(doubleValueForTestOnly*SCALE)) {}
 
 private:
     // Private constructor from raw value
@@ -71,11 +76,42 @@ private:
 
 public:
     // add
-    FixedPoint operator+();
-
+    FixedPoint operator+(const FixedPoint& other) const {
+		return FixedPoint(this->rawValue + other.rawValue);
+    }
+	// subtract
+	FixedPoint operator-(const FixedPoint& other) const {
+		return FixedPoint(this->rawValue - other.rawValue);
+	}
+	// multiply
+    FixedPoint operator*(const FixedPoint& other) const {
+        long long temp = static_cast<long long>(this->rawValue) * other.rawValue;
+        return FixedPoint(static_cast<long>(temp >> SCALE_FACTOR));
+    }
+	// divide
+    FixedPoint operator/(const FixedPoint& other) const {
+        long long temp = (static_cast<long long>(this->rawValue) << SCALE_FACTOR) / other.rawValue;
+        return FixedPoint(static_cast<long>(temp));
+	}
+	// comparison operators
+    bool operator<=(const FixedPoint& other) const {
+        return this->rawValue <= other.rawValue;
+	}
+    bool operator<(const FixedPoint& other) const {
+        return this->rawValue < other.rawValue;
+	}
+    bool operator>=(const FixedPoint& other) const {
+		return this->rawValue >= other.rawValue;
+	}
+    bool operator>(const FixedPoint& other) const {
+		return this->rawValue > other.rawValue;
+	}
+	bool operator==(const FixedPoint& other) const {
+		return this->rawValue == other.rawValue;
+	}
 
     //Add a friendly function to print the FixedPoint value (for testing purposes)
-    friend ostream& operator<<(ostream& os, const FixedPoint& fp);
+    //friend ostream& operator<<(ostream& os, const FixedPoint& fp);
 
 
 };
@@ -95,7 +131,63 @@ ostream& operator<<(ostream& os, const FixedPoint& fp) {
     return os;
 };
 
+istream& operator>>(istream& is, FixedPoint& fp) {
+    string input;
+	is >> input;
 
+	long integerPart = 0;
+	long decimalPart = 0;
+	bool isNegative = false;
+	bool afterDecimal = false;
+	long divisor = 1;
+
+	// Parse the input string
+    for (int i = 0; i < input.length(); ++i) {
+		char c = input[i];
+
+        if (i == 0 && c == '-') {
+            isNegative = true;
+            continue;
+        }
+        if (c == '.') {
+            afterDecimal = true;
+            continue;
+		}
+
+		long digit = c - '0';
+        
+        if (afterDecimal) {
+            decimalPart = decimalPart * 10 + digit;
+            divisor *= 10;
+        } else integerPart = integerPart * 10 + digit;
+        
+    }
+
+	//combine integer and decimal parts
+    long long finalRawValue = static_cast<long long>(integerPart) * fp.SCALE;
+
+    if(decimalPart > 0)
+        finalRawValue += (static_cast<long long>(decimalPart) * fp.SCALE) / divisor;
+
+	fp.rawValue = isNegative ? -finalRawValue : finalRawValue;
+
+	return is;
+}
+
+// Newton's method for square root by using FixedPoint
+FixedPoint FixedNewtonSqrtWithNoFloats(const FixedPoint& n) {
+    if (n.rawValue < 0) return FixedPoint(-1); // Error for negative numbers
+    if (n.rawValue == 0 || n.rawValue == SCALE) return n; // 0 or 1
+
+    FixedPoint x = (n / FixedPoint(2)) + FixedPoint(1); // Initial guess: n/2 + 1
+
+    // At first, I tried to use while(x * x > n) like the integer version, however, it cost too many iterations
+    // So I changed to a for loop with a fixed number of iterations to ensure convergence
+    for (int i = 0; i < 20; ++i) {
+        x = (x + n / x) / FixedPoint(2);
+    }
+    return x;
+}
  
 
 int main() {
@@ -105,5 +197,37 @@ int main() {
     cout << "Square root of " << number << " is: ";
     cout << "using Newton's method: " << NewtonSqrtWithNoFloats(number) << endl;
     cout << "using Binary Search method: " << binarySearchSqrtWithNoFloats(number) << endl;
+
+	cout << "Now, let's test the FixedPoint class and its square root function." << endl;
+
+    FixedPoint a, b;
+
+	cout << "Enter a non-negative fixed-point number without decimal part (e.g., 3): ";
+    cin >> a;
+	cout << "You entered: " << a << endl;
+    cout << "Enter a non-negative fixed-point number with decimal part (e.g., 3.14): ";
+    cin >> b;
+    cout << "You entered: " << b << endl;
+
+	cout << "Testing calculations with FixedPoint:" << endl;
+	cout << a << " + " << b << " = " << (a + b) << endl;
+	cout << a << " - " << b << " = " << (a - b) << endl;
+	cout << a << " * " << b << " = " << (a * b) << endl;
+	cout << a << " / " << b << " = " << (a / b) << endl;
+
+	cout << "Testing comparison operators with FixedPoint:" << endl;
+	cout << a << " <= " << b << " : " << (a <= b) << endl;
+	cout << a << " < " << b << " : " << (a < b) << endl;
+	cout << a << " >= " << b << " : " << (a >= b) << endl;
+	cout << a << " > " << b << " : " << (a > b) << endl;
+	cout << a << " == " << b << " : " << (a == b) << endl;
+
+	cout << "Testing square root function with FixedPoint:" << endl;
+    cout << "Square root of " << a << " is: ";
+    cout << "using Newton's method:" << FixedNewtonSqrtWithNoFloats(a) << endl;
+	cout << "Square root of " << b << " is: ";
+	cout << "using Newton's method:" << FixedNewtonSqrtWithNoFloats(b) << endl;
+    
+
     return 0;
 }
