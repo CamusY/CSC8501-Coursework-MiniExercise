@@ -59,19 +59,24 @@ So I tried to shorten the long long integers to long.
 */
 
 ostream& operator<<(ostream& os, const FixedPoint& fp) {
-    //get integer part
-    os << (fp.rawValue >> fp.SCALE_FACTOR);
-    //get decimal part
-    os << ".";
-    long decimalPart = fp.rawValue & (fp.SCALE - 1);
-    //print decimal part with leading zeros
+    long raw = fp.rawValue;
+    bool isNegative = raw < 0;
+    if (isNegative) raw = -raw;
+
+    long integerPart = raw / FixedPoint::SCALE;
+    long decimalPart = raw % FixedPoint::SCALE;
+
+    if (isNegative) os << "-";
+    os << integerPart << ".";
+
     for (int i = 0; i < FixedPoint::SCALE_FACTOR / 4; ++i) {
         decimalPart *= 10;
-        os << (decimalPart >> FixedPoint::SCALE_FACTOR);
-        decimalPart &= (FixedPoint::SCALE - 1);
+        os << (decimalPart / FixedPoint::SCALE);
+        decimalPart %= FixedPoint::SCALE;
     }
+
     return os;
-};
+}
 
 istream& operator>>(istream& is, FixedPoint& fp) {
     string input;
@@ -119,15 +124,15 @@ istream& operator>>(istream& is, FixedPoint& fp) {
 
 // Newton's method for square root by using FixedPoint
 FixedPoint FixedNewtonSqrtWithNoFloats(const FixedPoint& n) {
-    if (n.rawValue < 0) return FixedPoint(-1); // Error for negative numbers
+    if (n.rawValue < 0) return FixedPoint::FromRawValue(-1); // Error for negative numbers
     if (n.rawValue == 0) return n; // 0 or 1
 
-    FixedPoint x = (n / FixedPoint(2)) + FixedPoint(1); // Initial guess: n/2 + 1
+    FixedPoint x = (n / FixedPoint::FromRawValue(2)) + FixedPoint::FromRawValue(1); // Initial guess: n/2 + 1
 
     // At first, I tried to use while(x * x > n) like the integer version, however, it cost too many iterations
     // So I changed to a for loop with a fixed number of iterations to ensure convergence
     for (int i = 0; i < 20; ++i) {
-        x = (x + n / x) / FixedPoint(2);
+        x = (x + n / x) / FixedPoint::FromRawValue(2);
     }
     return x;
 }

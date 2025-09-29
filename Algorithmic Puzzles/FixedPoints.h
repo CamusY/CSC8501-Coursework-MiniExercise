@@ -1,6 +1,12 @@
 #pragma once
+#include <iostream>
 
 class FixedPoint {
+private:
+    // Private constructor from raw value
+    struct RawTag {};
+    FixedPoint(long raw, RawTag) : rawValue(raw) {}
+
 public:
     static constexpr int SCALE_FACTOR = 16; // 2^16
     static constexpr long SCALE = 1L << SCALE_FACTOR; // 65536
@@ -9,41 +15,34 @@ public:
 
     // Default constructor
     FixedPoint() : rawValue(0) {}
-
-    // Constructor from integer part
-    FixedPoint(long integerPart) : rawValue(integerPart* SCALE) {}
-
-    FixedPoint(const FixedPoint& other) {
-		this->rawValue = other.rawValue;
+	// Constructor from integer
+	FixedPoint(int integerPart) : rawValue(static_cast<long>(integerPart)* SCALE) {}
+	// Constructor from long
+	FixedPoint(long integerPart) : rawValue(integerPart* SCALE) {}
+    FixedPoint(const FixedPoint& other) : rawValue(other.rawValue) {}
+    static FixedPoint FromRawValue(long raw) {
+        return FixedPoint(raw, RawTag{});
     }
 
-
-    // Test double constructor (only for testing purposes)
-    // FixedPoint(double doubleValueForTestOnly ) : rawValue(round(doubleValueForTestOnly*SCALE)) {}
-
-//private:
-    // Private constructor from raw value
-    // explicit FixedPoint(long rawValue) : rawValue(rawValue) {}
-
-public:
-    // add
     FixedPoint operator+(const FixedPoint& other) const {
-        return FixedPoint(this->rawValue + other.rawValue);
+        return FixedPoint::FromRawValue(rawValue + other.rawValue);
     }
-    // subtract
     FixedPoint operator-(const FixedPoint& other) const {
-        return FixedPoint(this->rawValue - other.rawValue);
+        return FixedPoint::FromRawValue(rawValue - other.rawValue);
     }
-    // multiply
     FixedPoint operator*(const FixedPoint& other) const {
-        long long temp = static_cast<long long>(this->rawValue) * other.rawValue;
-        return FixedPoint(static_cast<long>(temp >> SCALE_FACTOR));
+        long long temp = static_cast<long long>(rawValue) * other.rawValue;
+        return FixedPoint::FromRawValue(static_cast<long>(temp >> SCALE));
     }
-    // divide
     FixedPoint operator/(const FixedPoint& other) const {
-        long long temp = (static_cast<long long>(this->rawValue) << SCALE_FACTOR) / other.rawValue;
-        return FixedPoint(static_cast<long>(temp));
+        if (other.rawValue == 0) {
+            return FixedPoint::FromRawValue(0x7FFFFFFF);
+        }
+        long long temp = (static_cast<long long>(rawValue) << SCALE) / other.rawValue;
+        return FixedPoint::FromRawValue(static_cast<long>(temp));
     }
+
+
     // comparison operators
     bool operator<=(const FixedPoint& other) const {
         return this->rawValue <= other.rawValue;
