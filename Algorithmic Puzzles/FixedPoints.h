@@ -4,6 +4,9 @@
 class FixedPoint {
 private:
     // Private constructor from raw value
+	// I stucked for a long time here, because I want to prevent users from using this constructor directly
+	// but there is already a long type in the public
+	// so in the end, I created a tag type to differentiate this constructor
     struct RawTag {};
     FixedPoint(long raw, RawTag) : rawValue(raw) {}
 

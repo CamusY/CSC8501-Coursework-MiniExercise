@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FirstPuzzle.cpp" />
+    <ClCompile Include="SecondPuzzle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FixedPoints.h" />
