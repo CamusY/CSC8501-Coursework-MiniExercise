@@ -123,8 +123,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FirstPuzzle.cpp" />
     <ClCompile Include="SecondPuzzle.cpp" />
+    <ClCompile Include="ThirdPuzzle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FixedPoints.h" />

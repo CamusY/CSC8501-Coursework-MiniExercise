@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FirstPuzzle.cpp">
+    <ClCompile Include="SecondPuzzle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SecondPuzzle.cpp">
+    <ClCompile Include="ThirdPuzzle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
