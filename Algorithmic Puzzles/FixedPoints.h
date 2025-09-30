@@ -32,13 +32,13 @@ public:
     }
     FixedPoint operator*(const FixedPoint& other) const {
         long long temp = static_cast<long long>(rawValue) * other.rawValue;
-        return FixedPoint::FromRawValue(static_cast<long>(temp >> SCALE));
+        return FixedPoint::FromRawValue(static_cast<long>(temp >> SCALE_FACTOR));
     }
     FixedPoint operator/(const FixedPoint& other) const {
         if (other.rawValue == 0) {
             return FixedPoint::FromRawValue(0x7FFFFFFF);
         }
-        long long temp = (static_cast<long long>(rawValue) << SCALE) / other.rawValue;
+        long long temp = (static_cast<long long>(rawValue) << SCALE_FACTOR) / other.rawValue;
         return FixedPoint::FromRawValue(static_cast<long>(temp));
     }
 
@@ -60,8 +60,9 @@ public:
         return this->rawValue == other.rawValue;
     }
 
-    //Add a friendly function to print the FixedPoint value (for testing purposes)
-    //friend ostream& operator<<(ostream& os, const FixedPoint& fp);
-
+	//due to the limitation of time, I didn't implement other operators like +=, -=, *=, /=, !=, etc.
+	//but the above operators are enough for this puzzle.
+	//and rest of the operators are easy to implement.
+	//rest of the code is in FixedPoints.cpp
 
 };

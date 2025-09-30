@@ -1,8 +1,2 @@
 ﻿  FirstPuzzle.cpp
-H:\Desktop\MiniEx\Algorithmic Puzzles\FixedPoints.h(35,64): warning C4293: '>>': shift count negative or too big, undefined behavior
-  (compiling source file 'FirstPuzzle.cpp')
-  
-H:\Desktop\MiniEx\Algorithmic Puzzles\FixedPoints.h(41,60): warning C4293: '<<': shift count negative or too big, undefined behavior
-  (compiling source file 'FirstPuzzle.cpp')
-  
   Algorithmic Puzzles.vcxproj -> H:\Desktop\MiniEx\x64\Debug\Algorithmic Puzzles.exe

@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include "FixedPoints.h"
 
-// For testing purposes only
-// #include <cmath> 
 
 using namespace std;
 
@@ -127,12 +125,12 @@ FixedPoint FixedNewtonSqrtWithNoFloats(const FixedPoint& n) {
     if (n.rawValue < 0) return FixedPoint::FromRawValue(-1); // Error for negative numbers
     if (n.rawValue == 0) return n; // 0 or 1
 
-    FixedPoint x = (n / FixedPoint::FromRawValue(2)) + FixedPoint::FromRawValue(1); // Initial guess: n/2 + 1
+    FixedPoint x = (n / FixedPoint(2)) + FixedPoint(2); // Initial guess: n/2 + 1
 
     // At first, I tried to use while(x * x > n) like the integer version, however, it cost too many iterations
     // So I changed to a for loop with a fixed number of iterations to ensure convergence
     for (int i = 0; i < 20; ++i) {
-        x = (x + n / x) / FixedPoint::FromRawValue(2);
+        x = (x + n / x) / FixedPoint(2);
     }
     return x;
 }
