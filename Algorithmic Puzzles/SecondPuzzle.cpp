@@ -28,9 +28,9 @@ void drawCircle(int centerX, int centerY, int circleRadius) {
 		setPixel(centerX - y, centerY + x);
 		setPixel(centerX + y, centerY - x);
 		setPixel(centerX - y, centerY - x);
-		if (decision < 0) {
-			decision += 4 * x + 6;
-		} else {
+		if (decision < 0)
+			decision += 4 * x + 6; 
+		else {
 			decision += 4 * (x - y) + 10;
 			y--;
 		}
