@@ -23,6 +23,8 @@ public:
 	// Constructor from long
 	FixedPoint(long integerPart) : rawValue(integerPart* SCALE) {}
     FixedPoint(const FixedPoint& other) : rawValue(other.rawValue) {}
+
+	// Factory method to create FixedPoint from raw value
     static FixedPoint FromRawValue(long raw) {
         return FixedPoint(raw, RawTag{});
     }

@@ -123,10 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ThirdPuzzle.cpp" />
+    <ClInclude Include="FixedPoints.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FixedPoints.h" />
+    <ClCompile Include="ThirdPuzzle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

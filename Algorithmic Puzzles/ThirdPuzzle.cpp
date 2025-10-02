@@ -41,7 +41,9 @@ struct SimulationResult {
 	uint64_t trials;
 };
 
-// acturally I want to use rand() but it is not thread safe, so I use mt19937
+//following is the Monte Carlo simulation, but the if statement is a bit complex, so after writing it, I decided to refactor it
+/*
+ acturally I want to use rand() but it is not thread safe, so I use mt19937
 SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strategy strategy, uint64_t trails, mt19937_64 &rng) {
 	uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
 	uint64_t wins = 0;
@@ -75,6 +77,72 @@ SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strat
 	}
 	return { wins, trails };
 }
+*/
+
+// refactored version
+class IStrategy{
+public:
+	virtual ~IStrategy() = default;
+	virtual bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const = 0;
+
+};
+
+// STAY strategy
+class StayStrategy : public IStrategy {
+public:
+	bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const override {
+		uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
+		size_t prizeDoor = doorDist(rng);
+		size_t initialChoice = doorDist(rng);
+		return (initialChoice == prizeDoor);
+	}
+};
+
+// SWITCH_TO_SINGLE strategy
+class SwitchToSingleStrategy : public IStrategy {
+	public:
+	bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const override {
+		if (numRemainingUnopened != 1) return false; // invalid
+		uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
+		size_t prizeDoor = doorDist(rng);
+		size_t initialChoice = doorDist(rng);
+		return (initialChoice != prizeDoor);
+	}
+};
+
+// SWITCH_RANDOM_M strategy
+class SwitchRandomMStrategy : public IStrategy {
+	public:
+	bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const override {
+		size_t m = numRemainingUnopened;
+
+		if (m == 0) return false; // invalid
+
+		uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
+
+		size_t prizeDoor = doorDist(rng);
+		size_t initialChoice = doorDist(rng);
+
+		// the player switches to one of the m remaining unopened doors
+		if (initialChoice == prizeDoor) return false;
+
+		else {
+			uniform_int_distribution<size_t> switchDist(0, m - 1);
+			size_t switchChoice = switchDist(rng);
+			return (switchChoice == 0); // only one of the m doors has the prize
+		}
+	}
+};
+
+SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strategy strategy, uint64_t trails, mt19937_64& rng) {
+	uint64_t wins = 0;
+	for (uint64_t t = 0; t < trails; t++){
+
+	}
+}
+
+
+
 
 int main() {
 	size_t numDoors = 3; // n
