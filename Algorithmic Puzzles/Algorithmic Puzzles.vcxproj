@@ -123,7 +123,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SecondPuzzle.cpp" />
     <ClCompile Include="ThirdPuzzle.cpp" />
   </ItemGroup>
   <ItemGroup>

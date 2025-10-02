@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <random>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -79,21 +80,53 @@ int main() {
 	size_t numDoors = 3; // n
 	size_t numRemainingUnopened = 1; // m
 	uint64_t numTrials = 1000000; // number of Monte Carlo trials
-	Strategy strategy = Strategy::SWITCH_RANDOM_M;
+	// Strategy strategy = Strategy::SWITCH_RANDOM_M;
 	
 	random_device rd;
 	mt19937_64 rng(rd());
 
-	SimulationResult res = Monte_Carlo(numDoors, numRemainingUnopened, strategy, numTrials, rng);
-	double p_hat = static_cast<double>(res.wins) / static_cast<double>(res.trials);
-	double p_theoretical = theoreticalProbability(numDoors, numRemainingUnopened, strategy);
+	for (Strategy strategy : {Strategy::STAY, Strategy::SWITCH_RANDOM_M, Strategy::SWITCH_TO_SINGLE}){
+		SimulationResult res = Monte_Carlo(numDoors, numRemainingUnopened, strategy, numTrials, rng);
+		double p_hat = static_cast<double>(res.wins) / static_cast<double>(res.trials);
+		double p_theoretical = theoreticalProbability(numDoors, numRemainingUnopened, strategy);
 
-	double se = sqrt(p_hat * (1.0 - p_hat) / static_cast<double>(res.trials));
-	double z = 1.96; // for 95% confidence interval
-	double ci_lower = p_hat - z * se;
-	double ci_upper = p_hat + z * se;
+		// standard error and 95% confidence interval
+		double se = sqrt(p_hat * (1.0 - p_hat) / static_cast<double>(res.trials));
+		double z = 1.96; // for 95% confidence interval
+		double ci_lower = p_hat - z * se;
+		double ci_upper = p_hat + z * se;
+		// the theoretical probability should be within the confidence interval
 
-	cout << fixed << setprecision(6);
+		ofstream outFile("ThirdPuzzle_MonterCarlo_Output.txt", ios::app);
 
+		outFile << fixed << setprecision(6);
+		outFile << "Parameters: numDoors(number of the Doors)= " << numDoors
+			<< ", numRemainingUnopened(remaining unopened doors)= " << numRemainingUnopened
+			<< ", strategy= " << (strategy == Strategy::STAY ? "STAY" : (strategy == Strategy::SWITCH_TO_SINGLE ? "SWITCH_TO_SINGLE" : "SWITCH_RANDOM_M"))
+			<< ", numTrials= " << numTrials << endl;
+		outFile << "Theoretical Probability: " << p_theoretical << endl;
+		outFile << "Monte Carlo Estimate: " << p_hat << endl;
+		outFile << "Wins: " << res.wins << ", Trials: " << res.trials << endl;
+		outFile << "95% Confidence Interval: [" << ci_lower << ", " << ci_upper << "]" << endl;
+		outFile << "Standard Error: " << se << endl;
+		outFile << "----------------------------------------" << endl;
+		outFile.close();
+
+		cout << fixed << setprecision(6);
+		cout << "Parameters: numDoors(number of the Doors)= " << numDoors
+			<< ", numRemainingUnopened(remaining unopened doors)= " << numRemainingUnopened
+			<< ", strategy= " << (strategy == Strategy::STAY ? "STAY" : (strategy == Strategy::SWITCH_TO_SINGLE ? "SWITCH_TO_SINGLE" : "SWITCH_RANDOM_M"))
+			<< ", numTrials= " << numTrials << endl;
+
+		cout << "Theoretical Probability: " << p_theoretical << endl;
+		cout << "Monte Carlo Estimate: " << p_hat << endl;
+		cout << "Wins: " << res.wins << ", Trials: " << res.trials << endl;
+		cout << "95% Confidence Interval: [" << ci_lower << ", " << ci_upper << "]" << endl;
+		cout << "Standard Error: " << se << endl;
+	}
+
+	
+
+	return 0;
 
 }
