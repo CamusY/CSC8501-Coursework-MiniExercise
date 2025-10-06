@@ -8,7 +8,7 @@ using namespace std;
 
 const int numDoors = 3;
 // false means closed, true means open
-bool doors[numDoors] = { false, false, false }; 
+bool doors[numDoors] = { false, false, false };
 // the prize is behind one of the doors
 // so let's assume there are n doors, all closed initially
 // and the host opens the doors, which left m doors closed
@@ -60,7 +60,7 @@ SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strat
 
 		bool win = false;
 		// host opens n-m-1 doors that are not the prize door and not the player choice
-		if(strategy == Strategy::STAY) 
+		if(strategy == Strategy::STAY)
 			win = (initialChoice == prizeDoor);
 		else if (strategy == Strategy::SWITCH_TO_SINGLE)
 			win = (initialChoice != prizeDoor);
@@ -86,7 +86,7 @@ SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strat
 */
 
 // refactored version
-class IStrategy{
+class IStrategy {
 public:
 	virtual ~IStrategy() = default;
 	// return true if win, false if lose
@@ -113,7 +113,7 @@ public:
 
 // SWITCH_TO_SINGLE strategy
 class SwitchToSingleStrategy : public IStrategy {
-	public:
+public:
 	bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const override {
 		if (numRemainingUnopened != 1) return false; // invalid
 		uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
@@ -130,7 +130,7 @@ class SwitchToSingleStrategy : public IStrategy {
 
 // SWITCH_RANDOM_M strategy
 class SwitchRandomMStrategy : public IStrategy {
-	public:
+public:
 	bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const override {
 		size_t m = numRemainingUnopened;
 
@@ -152,7 +152,7 @@ class SwitchRandomMStrategy : public IStrategy {
 
 	}
 
-	double theoreticalProbability(size_t numDoors, size_t numRemainingUnopened) const override{
+	double theoreticalProbability(size_t numDoors, size_t numRemainingUnopened) const override {
 		if (numDoors < 2) return 0.0;
 		if (numRemainingUnopened == 0) return 0.0; // invalid
 		return (numDoors - 1.0) / (numRemainingUnopened * numDoors);
@@ -160,9 +160,9 @@ class SwitchRandomMStrategy : public IStrategy {
 
 };
 
-SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, IStrategy &strategy, uint64_t trails, mt19937_64& rng) {
+SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, IStrategy& strategy, uint64_t trails, mt19937_64& rng) {
 	uint64_t wins = 0;
-	for (uint64_t t = 0; t < trails; t++){
+	for (uint64_t t = 0; t < trails; t++) {
 		if (strategy.eachPlayRound(numDoors, numRemainingUnopened, rng))
 			++wins;
 	}
@@ -175,7 +175,7 @@ int main() {
 	size_t numDoors = 3; // number of doors, n
 	size_t numRemainingUnopened = 1; // number of remaining unopened doors, m, usually m = 1
 	uint64_t numTrials = 1000000; // number of Monte Carlo trials
-	
+
 	// random number generator
 	random_device rd;
 	mt19937_64 rng(rd());
