@@ -18,16 +18,22 @@ bool doors[numDoors] = { false, false, false };
 // in that case, the P_stay = 1/n, and P_switch = (n-1)/n
 // and if the host opens n-m-1 doors, then P_switch_random_m = (n-1)/(mn)
 // so if m = 1, then P_switch_random_1 = (n-1)/n
+// if m = n-1, then P_switch_random_(n-1) = 1/n, same as P_stay
+// if m = n-2, then P_switch_random_(n-2) = (n-1)/(n(n-2)), which is greater than 1/n for n>3
+// so the more doors the host opens, the better for the player to switch
 
+// struct to hold the result of the simulation
 struct SimulationResult {
 	uint64_t wins;
 	uint64_t trials;
 };
 
-//following is the Monte Carlo simulation, but the if statement is a bit complex, so after writing it, I decided to refactor it
+
+//following is the Monte Carlo simulation, but the if statement is a bit complex, so I decide to refactor it, see below
+
 /*
-BUT the puzzle need Monte Carlo simulation to verify the result
-enum class strategy { stay, switch_to_single, switch_random_m };
+
+enum class Strategy { STAY, SWITCH_TO_SINGLE, SWITCH_RANDOM_M };
 
 double theoreticalprobability(size_t numdoors, size_t numremainingunopened, strategy strategy) {
 	if (numdoors < 2) return 0.0;
