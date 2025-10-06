@@ -160,6 +160,7 @@ public:
 
 };
 
+// Monte Carlo simulation function
 SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, IStrategy& strategy, uint64_t trails, mt19937_64& rng) {
 	uint64_t wins = 0;
 	for (uint64_t t = 0; t < trails; t++) {
