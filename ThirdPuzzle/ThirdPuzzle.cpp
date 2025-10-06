@@ -17,25 +17,6 @@ bool doors[numDoors] = { false, false, false }; // false means closed, true mean
 // and if the host opens n-m-1 doors, then P_switch_random_m = (n-1)/(mn)
 // so if m = 1, then P_switch_random_1 = (n-1)/n
 
-
-//BUT the puzzle need Monte Carlo simulation to verify the result
-//enum class strategy { stay, switch_to_single, switch_random_m };
-//
-//double theoreticalprobability(size_t numdoors, size_t numremainingunopened, strategy strategy) {
-//	if (numdoors < 2) return 0.0;
-//	if (strategy == strategy::stay) return 1.0 / numdoors;
-//	if (strategy == strategy::switch_to_single){
-//		if (numremainingunopened != 1) return (numdoors - 1.0) / numdoors; // invalid
-//		else return (numdoors - 1.0) / numdoors;
-//	}
-//	if (strategy == strategy::switch_random_m) {
-//		size_t m = numremainingunopened;
-//		if (m == 0) return 0.0; // invalid
-//		return (numdoors - 1.0) / (m * numdoors);
-//	}
-//	return 0.0; // should not reach here
-//}
-
 struct SimulationResult {
 	uint64_t wins;
 	uint64_t trials;
@@ -43,7 +24,24 @@ struct SimulationResult {
 
 //following is the Monte Carlo simulation, but the if statement is a bit complex, so after writing it, I decided to refactor it
 /*
- acturally I want to use rand() but it is not thread safe, so I use mt19937
+BUT the puzzle need Monte Carlo simulation to verify the result
+enum class strategy { stay, switch_to_single, switch_random_m };
+
+double theoreticalprobability(size_t numdoors, size_t numremainingunopened, strategy strategy) {
+	if (numdoors < 2) return 0.0;
+	if (strategy == strategy::stay) return 1.0 / numdoors;
+	if (strategy == strategy::switch_to_single){
+		if (numremainingunopened != 1) return (numdoors - 1.0) / numdoors; // invalid
+		else return (numdoors - 1.0) / numdoors;
+	}
+	if (strategy == strategy::switch_random_m) {
+		size_t m = numremainingunopened;
+		if (m == 0) return 0.0; // invalid
+		return (numdoors - 1.0) / (m * numdoors);
+	}
+	return 0.0; // should not reach here
+}
+// acturally I want to use rand() but it is not thread safe, so I use mt19937
 SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strategy strategy, uint64_t trails, mt19937_64 &rng) {
 	uniform_int_distribution<size_t> doorDist(0, numDoors - 1);
 	uint64_t wins = 0;
@@ -220,50 +218,6 @@ int main() {
 		cout << "Standard Error: " << se << endl;
 		cout << "----------------------------------------" << endl;
 	}
-
-
-
-
-
-	/*for () {
-		SimulationResult res = Monte_Carlo(numDoors, numRemainingUnopened, strategy, numTrials, rng);
-		double p_hat = static_cast<double>(res.wins) / static_cast<double>(res.trials);
-		double p_theoretical = theoreticalProbability(numDoors, numRemainingUnopened, strategy);
-
-		// standard error and 95% confidence interval
-		double se = sqrt(p_hat * (1.0 - p_hat) / static_cast<double>(res.trials));
-		double z = 1.96; // for 95% confidence interval
-		double ci_lower = p_hat - z * se;
-		double ci_upper = p_hat + z * se;
-		// the theoretical probability should be within the confidence interval
-
-		ofstream outFile("ThirdPuzzle_MonterCarlo_Output.txt", ios::app);
-
-		outFile << fixed << setprecision(6);
-		outFile << "Parameters: numDoors(number of the Doors)= " << numDoors
-			<< ", numRemainingUnopened(remaining unopened doors)= " << numRemainingUnopened
-			<< ", strategy= " << (strategy == Strategy::STAY ? "STAY" : (strategy == Strategy::SWITCH_TO_SINGLE ? "SWITCH_TO_SINGLE" : "SWITCH_RANDOM_M"))
-			<< ", numTrials= " << numTrials << endl;
-		outFile << "Theoretical Probability: " << p_theoretical << endl;
-		outFile << "Monte Carlo Estimate: " << p_hat << endl;
-		outFile << "Wins: " << res.wins << ", Trials: " << res.trials << endl;
-		outFile << "95% Confidence Interval: [" << ci_lower << ", " << ci_upper << "]" << endl;
-		outFile << "Standard Error: " << se << endl;
-		outFile << "----------------------------------------" << endl;
-		outFile.close();
-
-		cout << fixed << setprecision(6);
-		cout << "Parameters: numDoors(number of the Doors)= " << numDoors
-			<< ", numRemainingUnopened(remaining unopened doors)= " << numRemainingUnopened
-			<< ", strategy= " << (strategy == Strategy::STAY ? "STAY" : (strategy == Strategy::SWITCH_TO_SINGLE ? "SWITCH_TO_SINGLE" : "SWITCH_RANDOM_M"))
-			<< ", numTrials= " << numTrials << endl;
-
-		cout << "Theoretical Probability: " << p_theoretical << endl;
-		cout << "Monte Carlo Estimate: " << p_hat << endl;
-		cout << "Wins: " << res.wins << ", Trials: " << res.trials << endl;
-		cout << "95% Confidence Interval: [" << ci_lower << ", " << ci_upper << "]" << endl;
-		cout << "Standard Error: " << se << endl;
-	}*/
 
 	return 0;
 
