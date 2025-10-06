@@ -1,0 +1,66 @@
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= STAY
+ numTrials= 1000000
+Theoretical Probability: 0.333333
+Monte Carlo Estimate: 0.334061
+Wins: 334061, Trials: 1000000
+95% Confidence Interval: [0.333137, 0.334985]
+Standard Error: 0.000472
+----------------------------------------
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= SWITCH_TO_SINGLE
+ numTrials= 1000000
+Theoretical Probability: 0.666667
+Monte Carlo Estimate: 0.665633
+Wins: 665633, Trials: 1000000
+95% Confidence Interval: [0.664708, 0.666558]
+Standard Error: 0.000472
+----------------------------------------
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= SWITCH_RANDOM_M
+ numTrials= 1000000
+Theoretical Probability: 0.666667
+Monte Carlo Estimate: 0.666646
+Wins: 666646, Trials: 1000000
+95% Confidence Interval: [0.665722, 0.667570]
+Standard Error: 0.000471
+----------------------------------------
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= STAY
+ numTrials= 1000000
+Theoretical Probability: 0.333333
+Monte Carlo Estimate: 0.333455
+Wins: 333455, Trials: 1000000
+95% Confidence Interval: [0.332531, 0.334379]
+Standard Error: 0.000471
+----------------------------------------
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= SWITCH_TO_SINGLE
+ numTrials= 1000000
+Theoretical Probability: 0.666667
+Monte Carlo Estimate: 0.666466
+Wins: 666466, Trials: 1000000
+95% Confidence Interval: [0.665542, 0.667390]
+Standard Error: 0.000471
+----------------------------------------
+Parameters: 
+ numDoors(number of the Doors)= 3
+ numRemainingUnopened(remaining unopened doors)= 1
+ strategy= SWITCH_RANDOM_M
+ numTrials= 1000000
+Theoretical Probability: 0.666667
+Monte Carlo Estimate: 0.666767
+Wins: 666767, Trials: 1000000
+95% Confidence Interval: [0.665843, 0.667691]
+Standard Error: 0.000471
+----------------------------------------
