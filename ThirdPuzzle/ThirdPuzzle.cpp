@@ -7,7 +7,9 @@
 using namespace std;
 
 const int numDoors = 3;
-bool doors[numDoors] = { false, false, false }; // false means closed, true means open
+// false means closed, true means open
+bool doors[numDoors] = { false, false, false }; 
+// the prize is behind one of the doors
 // so let's assume there are n doors, all closed initially
 // and the host opens the doors, which left m doors closed
 // so the host open n-m-1 doors
@@ -81,8 +83,9 @@ SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, Strat
 class IStrategy{
 public:
 	virtual ~IStrategy() = default;
+	// return true if win, false if lose
 	virtual bool eachPlayRound(size_t numDoors, size_t numRemainingUnopened, mt19937_64& rng) const = 0;
-	
+	// return the theoretical probability of winning
 	virtual double theoreticalProbability(size_t numDoors, size_t numRemainingUnopened) const = 0;
 };
 
@@ -163,28 +166,31 @@ SimulationResult Monte_Carlo(size_t numDoors, size_t numRemainingUnopened, IStra
 
 
 int main() {
-	size_t numDoors = 3; // n
-	size_t numRemainingUnopened = 1; // m
+	size_t numDoors = 3; // number of doors, n
+	size_t numRemainingUnopened = 1; // number of remaining unopened doors, m, usually m = 1
 	uint64_t numTrials = 1000000; // number of Monte Carlo trials
-	// Strategy strategy = Strategy::SWITCH_RANDOM_M;
 	
+	// random number generator
 	random_device rd;
 	mt19937_64 rng(rd());
 
+	// strategies
 	StayStrategy stayStrategy;
 	SwitchToSingleStrategy switchToSingleStrategy;
 	SwitchRandomMStrategy switchRandomMStrategy;
-	// run the simulation for each strategy
 
+	// store strategies in a vector
 	vector<pair<string, IStrategy*>> strategies;
 	strategies.emplace_back("STAY", &stayStrategy);
 	strategies.emplace_back("SWITCH_TO_SINGLE", &switchToSingleStrategy);
 	strategies.emplace_back("SWITCH_RANDOM_M", &switchRandomMStrategy);
 
+	// run Monte Carlo simulation for each strategy
 	for (const pair<string, IStrategy*>& strategy : strategies) {
 		const string& strategyName = strategy.first;
 		IStrategy* strategyPtr = strategy.second;
 		SimulationResult res = Monte_Carlo(numDoors, numRemainingUnopened, *strategyPtr, numTrials, rng);
+		// Monte Carlo estimate of probability
 		double p_hat = static_cast<double>(res.wins) / static_cast<double>(res.trials);
 		double p_theoretical = strategyPtr->theoreticalProbability(numDoors, numRemainingUnopened);
 		// standard error and 95% confidence interval
@@ -193,6 +199,7 @@ int main() {
 		double ci_lower = p_hat - z * se;
 		double ci_upper = p_hat + z * se;
 		// the theoretical probability should be within the confidence interval
+		// write results to file
 		ofstream outFile("ThirdPuzzle_MonteCarlo_Output.txt", ios::app);
 		outFile << fixed << setprecision(6);
 		outFile << "Parameters: \n numDoors(number of the Doors)= " << numDoors
@@ -206,6 +213,7 @@ int main() {
 		outFile << "Standard Error: " << se << endl;
 		outFile << "----------------------------------------" << endl;
 		outFile.close();
+		// also print to console
 		cout << fixed << setprecision(6);
 		cout << "Parameters: \n numDoors(number of the Doors)= " << numDoors
 			<< "\n numRemainingUnopened(remaining unopened doors)= " << numRemainingUnopened
